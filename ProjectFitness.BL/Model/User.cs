@@ -4,9 +4,9 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace ProjectFitness.BL
+namespace ProjectFitness.BL.Model
 {
-    public class Class1
+    internal class User
     {
     }
 }
