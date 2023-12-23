@@ -10,9 +10,10 @@ namespace ProjectFitness.BL.Model
     /// <summary>
     /// Користувач
     /// </summary>
+    [Serializable]
     public class User
     {
-        #region
+        #region Властивості
         /// <summary>
         /// Ім'я
         /// </summary>
@@ -59,6 +60,7 @@ namespace ProjectFitness.BL.Model
             }
             #endregion
 
+            
             Name = name;
             Gender = gender;
             BirthDate = birthDate;

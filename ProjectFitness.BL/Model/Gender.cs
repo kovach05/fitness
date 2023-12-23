@@ -9,6 +9,7 @@ namespace ProjectFitness.BL.Model
     /// <summary>
     /// Стать
     /// </summary>
+    [Serializable]
     public class Gender
     {
         /// <summary>
