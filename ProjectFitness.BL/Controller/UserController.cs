@@ -11,39 +11,75 @@ namespace ProjectFitness.BL.Controller
 {
     /// <summary>
     /// Контроллер користувача.
-    /// </summary>
+    /// </summary> 
     public class UserController
     {
         /// <summary>
         /// Користувач.
         /// </summary>
-        public User User { get; }
+        public List<User> Users { get; }
+
+        public User CurrentUser { get; }
+
+        public bool IsNewUser { get; } = false;
         /// <summary>
         /// Сторення нового контроллера
         /// </summary>
         /// <param name="user"></param>
         /// <exception cref="ArgumentNullException"></exception>
-        public UserController(string userName, string genderName, DateTime birthDay, double weight, double height)
+        public UserController(string userName)
         {
-            //TODO: Перевірка
-            var gender = new Gender(genderName);
-            User = new User(userName, gender, birthDay, weight, height);
-        }
+            if (string.IsNullOrWhiteSpace(userName))
+            {
+                throw new ArgumentNullException("Ім'я користувача не може бути пустим", nameof(userName));
+            }
 
-        public UserController()
+            Users = GetUserData();
+
+            CurrentUser = Users.SingleOrDefault(u => u.Name == userName);
+
+            if(CurrentUser == null)
+            {
+                CurrentUser = new User(userName);
+                Users.Add(CurrentUser);
+                IsNewUser = true;
+                Save();
+            }
+        }
+        /// <summary>
+        /// Отримати збережений списк користувачів.
+        /// </summary>
+        /// <returns></returns>
+        private List<User> GetUserData()
         {
             var formatter = new BinaryFormatter();
 
             using (var fs = new FileStream("user.dat", FileMode.OpenOrCreate))
             {
-                if (formatter.Deserialize(fs) is User user)
+                if (formatter.Deserialize(fs) is List<User> user)
                 {
-                    User = user;
+                    return user;
                 }
-
-                //TODO: Що робити якщо користувача не прочитали???
+                else
+                {
+                    return new List<User>();
+                }
             }
+            return null;
         }
+
+
+        public void SetNewUserData(string genderName, DateTime birthDate, double weight = 1, double height = 1)
+        {
+            // Перевірка
+
+            CurrentUser.Gender = new Gender(genderName);
+            CurrentUser.BirthDate = birthDate;
+            CurrentUser.Weight = weight;
+            CurrentUser.Height = height;
+            Save();
+        }
+
         /// <summary>
         /// Створити дані користувача
         /// </summary>
@@ -53,7 +89,7 @@ namespace ProjectFitness.BL.Controller
 
             using (var fs = new FileStream("user.dat", FileMode.OpenOrCreate))
             {
-                formatter.Serialize(fs, User);
+                formatter.Serialize(fs, Users);
             }
         }
         /// <summary>

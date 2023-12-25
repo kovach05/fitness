@@ -21,11 +21,11 @@ namespace ProjectFitness.BL.Model
         /// <summary>
         /// Стать
         /// </summary>
-        public Gender Gender { get; }
+        public Gender Gender { get; set; }
         /// <summary>
         /// Дата народження
         /// </summary>
-        public DateTime BirthDate { get; }
+        public DateTime BirthDate { get; set; }
         /// <summary>
         /// Вага
         /// </summary>
@@ -34,6 +34,8 @@ namespace ProjectFitness.BL.Model
         /// Зріст
         /// </summary>
         public double Height { get; set; }
+
+        public int Age { get { return DateTime.Now.Year - BirthDate.Year; } }
         #endregion
         public User(string name, Gender gender, DateTime birthDate, double weight, double height)
         {
@@ -67,9 +69,19 @@ namespace ProjectFitness.BL.Model
             Weight = weight;
             Height = height;
         }
+
+        public User(string name)
+        {
+            if(string.IsNullOrWhiteSpace(name))
+            {
+                throw new ArgumentNullException("Ім'я користувача не може бути пустим або null", nameof(name));
+            }
+
+            Name = name;    
+        }
         public override string ToString()
         {
-            return Name;
+            return Name + " " + Age;
         }
     }
 }
