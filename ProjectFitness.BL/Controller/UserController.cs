@@ -12,8 +12,10 @@ namespace ProjectFitness.BL.Controller
     /// <summary>
     /// Контроллер користувача.
     /// </summary> 
-    public class UserController
+    public class UserController : ControllerBase
     {
+
+        private const string USER_FILE_NAME = "users.dat";
         /// <summary>
         /// Користувач.
         /// </summary>
@@ -52,21 +54,7 @@ namespace ProjectFitness.BL.Controller
         /// <returns></returns>
         private List<User> GetUserData()
         {
-            var formatter = new BinaryFormatter();
-
-            using (var fs = new FileStream("user.dat", FileMode.OpenOrCreate))
-            {
-              
-                if (fs.Length > 0 && formatter.Deserialize(fs) is List<User> user)
-                {
-                    return user;
-                }
-                else
-                {
-                    return new List<User>();
-                }
-            }
-            return null;
+           return Load<List<User>>(USER_FILE_NAME) ?? new List<User>();
         }
 
 
@@ -86,12 +74,7 @@ namespace ProjectFitness.BL.Controller
         /// </summary>
         public void Save()
         {
-            var formatter = new BinaryFormatter();
-
-            using (var fs = new FileStream("user.dat", FileMode.OpenOrCreate))
-            {
-                formatter.Serialize(fs, Users);
-            }
+            Save(USER_FILE_NAME, Users);
         }
         /// <summary>
         /// Получити дані користувача.
